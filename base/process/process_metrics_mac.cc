@@ -465,7 +465,7 @@ bool GetSystemMemoryInfo(SystemMemoryInfoKB* meminfo) {
   }
   DCHECK_EQ(HOST_VM_INFO64_COUNT, count);
 
-  static_assert(PAGE_SIZE % 1024 == 0, "Invalid page size");
+  assert(PAGE_SIZE % 1024 == 0 && "Invalid page size");
   meminfo->free = saturated_cast<int>(
       PAGE_SIZE / 1024 * (vm_info.free_count - vm_info.speculative_count));
   meminfo->speculative =

@@ -45,6 +45,7 @@ struct NativeLibraryStruct {
     void* dylib;
   };
 };
+
 using NativeLibrary = NativeLibraryStruct*;
 #elif defined(OS_POSIX)
 using NativeLibrary = void*;
