@@ -34,20 +34,22 @@ endmacro()
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_compile_options(-Wno-deprecated-builtins -Wno-narrowing -Wno-deprecated-declarations)
+add_compile_options(-Wno-deprecated-builtins -Wno-narrowing -Wno-deprecated-declarations -Wno-single-bit-bitfield-constant-conversion)
 
 include_directories(${PROJECT_SOURCE_DIR}/)
 include_directories(${PROJECT_SOURCE_DIR}/gen)
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
+
+
+enable_language(ASM)
 
 add_subdirectory(base)
 
 
 add_executable(test main.cc)
 
-
 target_link_libraries(test 
         base
+        libevent
         -lobjc
         "-framework Cocoa"
         "-framework Security")

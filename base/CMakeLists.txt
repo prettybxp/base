@@ -1,5 +1,8 @@
 
+
 set(BASE_SRCS_POSIX
+    time/time_conversion_posix.cc
+    time/time_exploded_posix.cc
 )
     
 
@@ -7,6 +10,7 @@ set(BASE_SRCS_LINUX
     native_library_posix.cc
     synchronization/waitable_event_posix.cc
     synchronization/waitable_event_watcher_posix.cc
+    base_paths_posix.cc
 )
 
 set(BASE_SRCS_MAC
@@ -70,6 +74,13 @@ set(BASE_SRCS_MAC
     native_library_mac.mm
     synchronization/waitable_event_mac.cc
     synchronization/waitable_event_watcher_mac.cc
+
+    mac/scoped_typeref.h
+    memory/shared_memory_handle_mac.cc
+    memory/shared_memory_mac.cc
+    power_monitor/power_monitor_device_source_mac.mm
+    time/time_mac.cc
+    
 )
 
 set(BASE_SRCS_WINDOWS
@@ -270,6 +281,7 @@ set(BASE_SRCS
     base64url.cc
     base64url.h
     base_export.h
+    base_switches.cc
     base_switches.h
     big_endian.cc
     big_endian.h
@@ -990,19 +1002,120 @@ set(BASE_SRCS
     version.h
     vlog.cc
     vlog.h
+
+    base_paths.cc
+    base_paths.h
+    base_paths_android.cc
+    base_paths_android.h
+    base_paths_mac.h
+    base_paths_mac.mm
+    base_paths_posix.h
+    base_paths_win.cc
+    base_paths_win.h
+    posix/unix_domain_socket.cc
 )
 
-list(FILTER BASE_SRCS EXCLUDE REGEX "_nacl\\.")
-list(FILTER BASE_SRCS EXCLUDE REGEX "_glib\\.")
-list(FILTER BASE_SRCS EXCLUDE REGEX "_chromeos\\.")
-list(FILTER BASE_SRCS EXCLUDE REGEX "_ios\\.")
-list(FILTER BASE_SRCS EXCLUDE REGEX "_android\\.")
-list(FILTER BASE_SRCS EXCLUDE REGEX "_win\\.")
-list(FILTER BASE_SRCS EXCLUDE REGEX "_linux\\.")
+
+if(OS_MAC)
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_nacl\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_glib\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_chromeos\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_ios\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_android\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_win\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_linux\\.")
+endif()
+
+if(OS_LINUX)
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_nacl\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_glib\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_chromeos\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_ios\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_android\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_win\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_mac\\.")
+endif()
+
+if(OS_WINDOWS)
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_nacl\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_glib\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_chromeos\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_ios\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_android\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_linux\\.")
+    list(FILTER BASE_SRCS EXCLUDE REGEX "_mac\\.")
+endif()
 
 APPEND_PLATFORM_SOURCES(BASE_SRCS)
 
-
 add_library(base STATIC ${BASE_SRCS})
 
+
+
+
+#include_directories(${PROJECT_SOURCE_DIR}/gen)
+
+
+set(LIBEVENT_SRCS
+    third_party/libevent/evbuffer.c
+    third_party/libevent/evdns.c
+    third_party/libevent/evdns.h
+    third_party/libevent/event-config.h
+    third_party/libevent/event-internal.h
+    third_party/libevent/event.c
+    third_party/libevent/event.h
+    third_party/libevent/event_tagging.c
+    third_party/libevent/evhttp.h
+    third_party/libevent/evrpc-internal.h
+    third_party/libevent/evrpc.c
+    third_party/libevent/evrpc.h
+    third_party/libevent/evsignal.h
+    third_party/libevent/evutil.c
+    third_party/libevent/evutil.h
+    third_party/libevent/http-internal.h
+    third_party/libevent/http.c
+    third_party/libevent/log.c
+    third_party/libevent/log.h
+    third_party/libevent/min_heap.h
+    third_party/libevent/poll.c
+    third_party/libevent/select.c
+    third_party/libevent/signal.c
+    third_party/libevent/strlcpy-internal.h
+    third_party/libevent/strlcpy.c
+)
+
+set(LIBEVENT_SRCS_MAC
+    third_party/libevent/kqueue.c
+    third_party/libevent/mac/config.h
+    third_party/libevent/mac/event-config.h
+)
+
+set(LIBEVENT_SRCS_LINUX
+    third_party/libevent/epoll.c
+    third_party/libevent/linux/config.h
+    third_party/libevent/linux/event-config.h
+)
+
+set(LIBEVENT_SRCS_ANDROID
+    third_party/libevent/android/config.h
+    third_party/libevent/android/event-config.h
+    third_party/libevent/epoll.c
+)
+
+
+APPEND_PLATFORM_SOURCES(LIBEVENT_SRCS)
+
+
+add_library(libevent STATIC ${LIBEVENT_SRCS})
+
+target_compile_definitions(libevent PRIVATE HAVE_CONFIG_H)
+
+if(OS_MAC)
+    target_include_directories(libevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libevent/mac/)
+endif()
+if(OS_LINUX)
+    target_include_directories(libevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libevent/linux/)
+endif()
+
+message(${CMAKE_CURRENT_SOURCE_DIR}/base/third_party/libevent/mac/)
 
