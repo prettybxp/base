@@ -48,9 +48,14 @@ add_subdirectory(base)
 add_executable(test main.cc)
 
 target_link_libraries(test 
-        base
-        libevent
-        -lobjc
-        "-framework Cocoa"
-        "-framework Security")
+    base
+    libevent
+)
 
+if(OS_MAC)
+  target_link_libraries(test 
+    -lobjc
+    "-framework Cocoa"
+    "-framework Security"
+  )
+endif()

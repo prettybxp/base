@@ -12,6 +12,7 @@
 
 #include "base/base_export.h"
 #include "base/macros.h"
+#include <string>
 
 namespace base {
 

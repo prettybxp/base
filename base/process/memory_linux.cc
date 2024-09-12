@@ -104,7 +104,7 @@ bool UncheckedMalloc(size_t size, void** result) {
     (!defined(LIBC_GLIBC) && !defined(USE_TCMALLOC))
   *result = malloc(size);
 #elif defined(LIBC_GLIBC) && !defined(USE_TCMALLOC)
-  *result = __libc_malloc(size);
+  *result = __builtin_malloc(size);
 #elif defined(USE_TCMALLOC)
   *result = tc_malloc_skip_new_handler(size);
 #endif

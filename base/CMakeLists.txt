@@ -11,6 +11,13 @@ set(BASE_SRCS_LINUX
     synchronization/waitable_event_posix.cc
     synchronization/waitable_event_watcher_posix.cc
     base_paths_posix.cc
+
+    time/time_conversion_posix.cc
+    time/time_exploded_posix.cc
+    time/time_now_posix.cc
+
+    memory/shared_memory_handle_posix.cc
+    memory/shared_memory_posix.cc
 )
 
 set(BASE_SRCS_MAC
@@ -80,6 +87,11 @@ set(BASE_SRCS_MAC
     memory/shared_memory_mac.cc
     power_monitor/power_monitor_device_source_mac.mm
     time/time_mac.cc
+    
+    files/file_path_watcher_fsevents.cc
+    files/file_path_watcher_fsevents.h
+    files/file_path_watcher_kqueue.cc
+    files/file_path_watcher_kqueue.h
     
 )
 
@@ -155,6 +167,13 @@ set(BASE_SRCS_WINDOWS
     native_library_win.cc
     synchronization/waitable_event_watcher_win.cc
     synchronization/waitable_event_win.cc
+
+    memory/shared_memory_handle_win.cc
+    memory/shared_memory_win.cc
+    power_monitor/power_monitor_device_source_win.cc
+    profiler/win32_stack_frame_unwinder.cc
+    profiler/win32_stack_frame_unwinder.h
+    time/time_win.cc
 )
 
 set(BASE_SRCS_IOS
@@ -393,10 +412,6 @@ set(BASE_SRCS
     files/file_path_constants.cc
     files/file_path_watcher.cc
     files/file_path_watcher.h
-    files/file_path_watcher_fsevents.cc
-    files/file_path_watcher_fsevents.h
-    files/file_path_watcher_kqueue.cc
-    files/file_path_watcher_kqueue.h
     files/file_path_watcher_linux.cc
     files/file_path_watcher_mac.cc
     files/file_path_watcher_win.cc
@@ -581,7 +596,7 @@ set(BASE_SRCS
     native_library.h
     nix/mime_util_xdg.cc
     nix/mime_util_xdg.h
-    nix/xdg_util.cc
+    #nix/xdg_util.cc
     nix/xdg_util.h
     no_destructor.h
     observer_list.h
@@ -1050,6 +1065,7 @@ APPEND_PLATFORM_SOURCES(BASE_SRCS)
 
 add_library(base STATIC ${BASE_SRCS})
 
+target_compile_definitions(base PRIVATE NO_TCMALLOC)
 
 
 
