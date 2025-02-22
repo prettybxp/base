@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.5.0)
 
 project(mini_base VERSION 1.0)
 
@@ -36,6 +36,10 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_compile_options(-Wno-deprecated-builtins -Wno-narrowing -Wno-deprecated-declarations -Wno-single-bit-bitfield-constant-conversion)
 
+add_definitions(-D_FILE_OFFSET_BITS=64)
+
+include(cmake/platform.cmake)
+
 include_directories(${PROJECT_SOURCE_DIR}/)
 include_directories(${PROJECT_SOURCE_DIR}/gen)
 
@@ -45,15 +49,21 @@ enable_language(ASM)
 add_subdirectory(base)
 
 
-add_executable(test main.cc)
+add_executable(demo main.cc)
 
-target_link_libraries(test 
+target_link_libraries(demo 
     base
     libevent
 )
 
+if(OS_LINUX)
+  target_link_libraries(demo 
+    -lpthread
+	-static
+  )
+endif()
 if(OS_MAC)
-  target_link_libraries(test 
+  target_link_libraries(demo 
     -lobjc
     "-framework Cocoa"
     "-framework Security"

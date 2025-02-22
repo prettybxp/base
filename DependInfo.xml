@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DependInfo version="2">
+    <Resource name="cmake" url="git@hcyfgit.imou.com:IMOU/NVR/tools/cmake-config.git" branch="master" scm="git" targetfolder="cmake"/>
+</DependInfo>
