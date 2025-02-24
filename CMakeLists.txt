@@ -53,7 +53,7 @@ add_executable(demo main.cc)
 
 target_link_libraries(demo 
     base
-    libevent
+    event
 )
 
 if(OS_LINUX)

@@ -1158,15 +1158,15 @@ set(LIBEVENT_SRCS_ANDROID
 APPEND_PLATFORM_SOURCES(LIBEVENT_SRCS)
 
 
-add_library(libevent STATIC ${LIBEVENT_SRCS})
+add_library(event STATIC ${LIBEVENT_SRCS})
 
-target_compile_definitions(libevent PRIVATE HAVE_CONFIG_H)
+target_compile_definitions(event PRIVATE HAVE_CONFIG_H)
 
 if(OS_MAC)
-    target_include_directories(libevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libevent/mac/)
+    target_include_directories(event PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libevent/mac/)
 endif()
 if(OS_LINUX)
-    target_include_directories(libevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libevent/linux/)
+    target_include_directories(event PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/libevent/linux/)
 endif()
 
 message(${CMAKE_CURRENT_SOURCE_DIR}/base/third_party/libevent/mac/)
