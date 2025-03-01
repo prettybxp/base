@@ -801,11 +801,12 @@ StackTrace::StackTrace(size_t count) {
 // stack dumping signal handler). NO malloc or stdio is allowed here.
 
 #if !defined(__UCLIBC__) && !defined(_AIX)
-  count = std::min(arraysize(trace_), count);
+  //count = std::min(arraysize(trace_), count);
 
   // Though the backtrace API man page does not list any possible negative
   // return values, we take no chance.
-  count_ = base::saturated_cast<size_t>(backtrace(trace_, count));
+  //count_ = base::saturated_cast<size_t>(backtrace(trace_, count));
+  count_ = 0;
 #else
   count_ = 0;
 #endif
