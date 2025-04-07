@@ -38,6 +38,9 @@ add_compile_options(-Wno-deprecated-builtins -Wno-narrowing -Wno-deprecated-decl
 
 add_definitions(-D_FILE_OFFSET_BITS=64)
 
+add_definitions(-DNDEBUG)
+
+
 include(cmake/platform.cmake)
 
 include_directories(${PROJECT_SOURCE_DIR}/)
