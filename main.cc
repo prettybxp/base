@@ -70,7 +70,7 @@ public:
 	
 	void Callback(std::string const& param)
 	{
-		std::cout << " callback " <<param<< std::endl;
+		std::cout << " callback " <<param<<std::endl;
 	}
 	
 	void FunStrong(std::string const& param)
@@ -101,14 +101,21 @@ void testScopedPtr()
 void testBindStrong()
 {
 	scoped_refptr<Demo> ptr = new Demo("Strong");
-	ptr->FunStrong("Strong");
+	ptr->FunStrong("111111");
 }
 
 void testBindWeak()
 {
 	scoped_refptr<Demo> ptr = new Demo("Weak");
-	ptr->FunWeak("Weak");
+	ptr->FunWeak("2222222");
 }
+
+void testBindRaw()
+{
+	scoped_refptr<Demo> ptr = new Demo("Raw");
+	ptr->FunRaw("3333333");
+}
+
 
 
 
@@ -128,6 +135,8 @@ int main(void)
 	testBindStrong();
 	
 	testBindWeak();
+	
+	//testBindRaw();
 
 	// 运行消息循环
 	base::RunLoop run_loop;
