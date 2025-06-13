@@ -13,6 +13,7 @@ add_mojom_bindings(internal
 		public/interfaces/bindings/interface_control_messages.mojom
 		public/interfaces/bindings/pipe_control_messages.mojom
 		public/mojom/base/big_buffer.mojom
+		logger.mojom
 )
 		
 add_mojom_bindings(base_type

@@ -1,0 +1,6 @@
+
+module sample.mojom;
+
+interface Logger {
+  Log(string message);
+};

@@ -15,6 +15,12 @@
 //#include "base/task/post_task.h"
 #include "base/logging.h"
 
+
+#include "mojo/logger.mojom.h"
+
+
+
+
 void MyTask() {
   LOG(INFO) << "Task is running on the created thread.";
   base::PlatformThread::Sleep(base::TimeDelta::FromSeconds(1));
@@ -51,6 +57,12 @@ int main(void)
 		
 		std::cout << "hello world " << std::endl;
 	}));
+	
+	
+	mojo::MessagePipe pipe;
+	sample::mojom::LoggerPtr logger(
+		sample::mojom::LoggerPtrInfo(std::move(pipe.handle0), 0));
+	sample::mojom::LoggerRequest request(std::move(pipe.handle1));
 	
 	
 	// 使用PostTask将任务发布到该线程上

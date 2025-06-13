@@ -43,7 +43,7 @@ include(cmake/platform.cmake)
 
 include_directories(${PROJECT_SOURCE_DIR}/)
 include_directories(${PROJECT_SOURCE_DIR}/gen)
-
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/mojo)
 
 enable_language(ASM)
 
@@ -52,11 +52,12 @@ add_subdirectory(mojo)
 
 message("compile use ${CMAKE_C_COMPILER}")
 
+
 add_executable(demo main.cc)
 
 target_link_libraries(demo 
-    base
 	mojo
+    base
     event
 )
 
