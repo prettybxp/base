@@ -38,6 +38,7 @@ add_compile_options(-Wno-deprecated-builtins -Wno-narrowing -Wno-deprecated-decl
 
 add_definitions(-D_FILE_OFFSET_BITS=64)
 
+
 include(cmake/platform.cmake)
 
 include_directories(${PROJECT_SOURCE_DIR}/)
@@ -47,12 +48,15 @@ include_directories(${PROJECT_SOURCE_DIR}/gen)
 enable_language(ASM)
 
 add_subdirectory(base)
+add_subdirectory(mojo)
 
+message("compile use ${CMAKE_C_COMPILER}")
 
 add_executable(demo main.cc)
 
 target_link_libraries(demo 
     base
+	mojo
     event
 )
 

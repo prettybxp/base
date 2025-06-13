@@ -9,6 +9,19 @@
 #include "base/bind.h"
 #include "base/threading/thread_task_runner_handle.h"
 
+
+#include "base/threading/thread.h"
+//#include "base/task/single_thread_task_runner.h"
+//#include "base/task/post_task.h"
+#include "base/logging.h"
+
+void MyTask() {
+  LOG(INFO) << "Task is running on the created thread.";
+  base::PlatformThread::Sleep(base::TimeDelta::FromSeconds(1));
+  base::ThreadTaskRunnerHandle::Get()->PostTask(FROM_HERE, base::BindOnce(&MyTask));
+}
+
+
 void test(std::string const& param)
 {
 	std::cout << "hello baofish " << param << std::endl;
@@ -24,12 +37,24 @@ int main(void)
 	base::PathService::Get(base::FILE_EXE, &p);
 
 
+	base::Thread my_thread("MyThread");
+
+
+	if (!my_thread.Start()) {
+		LOG(ERROR) << "Failed to start the thread.";
+		return -1;
+	}
+  
 	scoped_refptr<base::SingleThreadTaskRunner> task_runner = base::ThreadTaskRunnerHandle::Get();
 	//task_runner->PostTask(FROM_HERE, base::BindOnce(&test, p.AsUTF8Unsafe()));
 	task_runner->PostTask(FROM_HERE, base::BindOnce([](){
 		
 		std::cout << "hello world " << std::endl;
 	}));
+	
+	
+	// 使用PostTask将任务发布到该线程上
+	my_thread.task_runner()->PostTask(FROM_HERE, base::BindOnce(&MyTask));
 
 
 
