@@ -40,6 +40,7 @@ function(add_mojom_bindings TARGET)
         "${multiValueArgs}" 
         ${ARGN}
     )
+	
     
     # 处理所有依赖
     set(ALL_DEPS ${MOJOM_DEPS} ${MOJOM_PUBLIC_DEPS})
@@ -64,10 +65,10 @@ function(add_mojom_bindings TARGET)
             "-o" "${CMAKE_CURRENT_BINARY_DIR}"
             "--bytecode_path" "${CMAKE_SOURCE_DIR}/mojo/public/tools/bindings"
         )
+		
         
         # 处理消息ID加扰
-        if((NOT DEFINED MOJOM_SCRAMBLE_MESSAGE_IDS OR MOJOM_SCRAMBLE_MESSAGE_IDS) 
-           AND ENABLE_SCRAMBLED_MESSAGE_IDS)
+        if(MOJOM_SCRAMBLE_MESSAGE_IDS) 
             list(APPEND COMMON_GENERATOR_ARGS
                 "--scrambled_message_id_salt_path" "${MOJOM_MESSAGE_ID_SALT_PATH}"
             )
@@ -79,7 +80,7 @@ function(add_mojom_bindings TARGET)
         endif()
         
         # 允许原生结构
-        if(NOT DEFINED MOJOM_ALLOW_NATIVE_STRUCTS OR MOJOM_ALLOW_NATIVE_STRUCTS)
+        if(MOJOM_ALLOW_NATIVE_STRUCTS)
             list(APPEND COMMON_GENERATOR_ARGS "--allow_native_structs")
         endif()
         
@@ -114,7 +115,30 @@ function(add_mojom_bindings TARGET)
                 OUTPUT ${OUTPUTS}
                 COMMAND ${PYTHON_EXECUTABLE} ${MOJOM_GENERATOR_SCRIPT}
                     ${COMMON_GENERATOR_ARGS}
-                    "--generate_non_variant_code"
+					"--generate_non_variant_code"
+                    "-g" "c++" ${SOURCE}
+                DEPENDS ${SOURCE} ${MOJOM_GENERATOR_SCRIPT}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                COMMENT "Generating shared bindings for ${SOURCE}"
+            )
+        endforeach()
+		
+		foreach(SOURCE ${MOJOM_SOURCES})
+            get_filename_component(SOURCE_NAME ${SOURCE} NAME_WE)
+            set(SOURCE_GEN_DIR "${CMAKE_CURRENT_BINARY_DIR}/mojo")
+            
+            # 共享代码输出
+            set(OUTPUTS
+                "${SOURCE_GEN_DIR}/${SOURCE}.cc"
+                "${SOURCE_GEN_DIR}/${SOURCE}.h"
+            )
+            list(APPEND SHARED_CPP_OUTPUTS ${OUTPUTS})
+            
+            # 自定义命令
+            add_custom_command(
+                OUTPUT ${OUTPUTS}
+                COMMAND ${PYTHON_EXECUTABLE} ${MOJOM_GENERATOR_SCRIPT}
+                    ${COMMON_GENERATOR_ARGS}
                     "-g" "c++" ${SOURCE}
                 DEPENDS ${SOURCE} ${MOJOM_GENERATOR_SCRIPT}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -123,19 +147,10 @@ function(add_mojom_bindings TARGET)
         endforeach()
         
         # 创建共享库目标
-        add_library(${TARGET}_shared STATIC ${SHARED_CPP_OUTPUTS})
-        target_include_directories(${TARGET}_shared PUBLIC 
-            ${CMAKE_CURRENT_BINARY_DIR}
-        )
-        target_link_libraries(${TARGET}_shared PUBLIC
-            mojo_public_cpp_bindings
-        )
+        #add_library(${TARGET}_shared STATIC ${SHARED_CPP_OUTPUTS})
+		set(${TARGET}_SOURCES ${SHARED_CPP_OUTPUTS} PARENT_SCOPE)
         
-        # 添加依赖
-        foreach(DEP ${ALL_DEPS})
-            target_link_libraries(${TARGET}_shared PUBLIC ${DEP}_shared)
-        endforeach()
-        
+
         # 处理组件宏
         if(SHARED_COMPONENT_EXPORT_MACRO)
             # 生成共享导出头
@@ -159,27 +174,3 @@ function(add_mojom_bindings TARGET)
 
 endfunction()
 
-# Mojom组件辅助函数
-function(add_mojom_component TARGET)
-    # 解析参数
-    set(options)
-    set(oneValueArgs OUTPUT_PREFIX MACRO_PREFIX)
-    set(multiValueArgs SOURCES DEPS PUBLIC_DEPS IMPORT_DIRS)
-    
-    cmake_parse_arguments(MOJOM_COMP
-        "${options}" 
-        "${oneValueArgs}" 
-        "${multiValueArgs}" 
-        ${ARGN}
-    )
-    
-    # 调用基本Mojom函数
-    add_mojom_bindings(${TARGET}
-        SOURCES ${MOJOM_COMP_SOURCES}
-        DEPS ${MOJOM_COMP_DEPS}
-        PUBLIC_DEPS ${MOJOM_COMP_PUBLIC_DEPS}
-        IMPORT_DIRS ${MOJOM_COMP_IMPORT_DIRS}
-        COMPONENT_OUTPUT_PREFIX ${MOJOM_COMP_OUTPUT_PREFIX}
-        COMPONENT_MACRO_PREFIX ${MOJOM_COMP_MACRO_PREFIX}
-    )
-endfunction()
