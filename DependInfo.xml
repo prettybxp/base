@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <DependInfo version="2">
-    <Resource name="cmake" url="git@hcyfgit.imou.com:IMOU/NVR/tools/cmake-config.git" branch="master" scm="git" targetfolder="cmake"/>
+    <Resource name="cmake" url="git@hcyfgit.imou.com:IMOU/NVR/tools/cmake-config.git" branch="master" scm="git" targetfolder="cmake" commit_id="c39f66ca1aeb8c99d03d582c21e2997ce62d5dca" />
+	<Resource name="include" url="git@hcyfgit.imou.com:IMOU/NVR/include/google.git" branch="master" scm="git" targetfolder="Include" commit_id="c61cb22701ddff67ee05e247bd3be5c244287c20" />
 </DependInfo>

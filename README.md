@@ -13,6 +13,8 @@ ChangeLog
 2024-9-10, initial submission, start building based on CMake 
 2024-9-11, mac platform compiled by MAC OS X 14.6.1, xcode 15.4 
 2024-9-12, linux platform compilation connect through, centos, gcc version 11.5.0
+2025-2-22: Embedded platform support verified.
+2025-7-22: Ported the Mojo framework, enabling automatic Mojo code generation via CMake compilation; tested and passed on Linux.
 
 为什么是Chrome-base
 Chrome的base是一个优秀的C++基础库，如同boost，但它比boost更小更简单，还有很多实用功能。
@@ -29,6 +31,8 @@ Chrome的base是一个优秀的C++基础库，如同boost，但它比boost更小
 2024-9-10，初时提交，基于CMake开始构建
 2024-9-11，mac平台编译通过，macosx 14.6.1, xcode 15.4
 2024-9-12，linux平台编译连接通过, centos, gcc version 11.5.0 
+2025-2-22, 支持嵌入式平台，验证通过
+2025-7-22，移植mojo框架，支持cmake编译mojom自动生成mojo代码，linux测试通过
 
 
 

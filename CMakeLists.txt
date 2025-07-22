@@ -37,6 +37,10 @@ set(CMAKE_CXX_STANDARD 14)
 add_compile_options(-Wno-deprecated-builtins -Wno-narrowing -Wno-deprecated-declarations -Wno-single-bit-bitfield-constant-conversion)
 
 add_definitions(-D_FILE_OFFSET_BITS=64)
+if(NOT DEFINED platform)
+    add_definitions(-g -Wall -O0)
+endif()
+
 
 add_definitions(-DNDEBUG)
 
@@ -45,16 +49,21 @@ include(cmake/platform.cmake)
 
 include_directories(${PROJECT_SOURCE_DIR}/)
 include_directories(${PROJECT_SOURCE_DIR}/gen)
-
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/mojo)
 
 enable_language(ASM)
 
 add_subdirectory(base)
+add_subdirectory(mojo)
+add_subdirectory(ipc)
+
+message("compile use ${CMAKE_C_COMPILER}")
 
 
 add_executable(demo main.cc)
 
-target_link_libraries(demo 
+target_link_libraries(demo
+	mojo
     base
     event
 )
@@ -72,3 +81,4 @@ if(OS_MAC)
     "-framework Security"
   )
 endif()
+
